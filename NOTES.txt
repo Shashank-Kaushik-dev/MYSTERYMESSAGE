@@ -1,0 +1,2 @@
+Resend email
+React email template for resend
