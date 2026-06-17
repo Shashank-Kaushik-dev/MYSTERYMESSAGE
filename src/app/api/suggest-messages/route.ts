@@ -1,35 +1,43 @@
 import { groq } from "@ai-sdk/groq";
-import { streamText } from "ai";
+import { generateText } from "ai";
 
 export const runtime = "edge";
 
 export async function POST() {
   try {
-    const prompt =
-      "Create a list of three open-ended and engaging questions formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform, like Qooh.me, and should be suitable for a diverse audience. Avoid personal or sensitive topics, focusing instead on universal themes that encourage friendly interaction. For example, your output should be structured like this: 'What’s a hobby you’ve recently started?||If you could have dinner with any historical figure, who would it be?||What’s a simple thing that makes you happy?'. Ensure the questions are intriguing, foster curiosity, and contribute to a positive and welcoming conversational environment.";
+    const prompt = `
+Generate exactly 3 anonymous social messaging questions.
 
-    const result = streamText({
+Return ONLY valid JSON.
+
+Format:
+{
+  "messages": [
+    "question 1",
+    "question 2",
+    "question 3"
+  ]
+}
+`;
+
+    const { text } = await generateText({
       model: groq("llama-3.1-8b-instant"),
       prompt,
       temperature: 0.8,
-      maxOutputTokens: 400,
     });
 
-    return result.toTextStreamResponse();
-  } catch (error) {
-    console.error("Error generating questions:", error);
+    const parsed = JSON.parse(text);
 
-    return new Response(
-      JSON.stringify({
+    return Response.json(parsed);
+  } catch (error) {
+    console.error(error);
+
+    return Response.json(
+      {
         success: false,
         message: "Failed to generate questions",
-      }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      },
+      { status: 500 }
     );
   }
 }

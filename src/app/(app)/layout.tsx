@@ -13,18 +13,13 @@ export const metadata: Metadata = {
 interface RootLayoutProps {
   children: React.ReactNode;
 }
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: RootLayoutProps) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        
-          <Navbar />
-          {children}
-        
-      </body>
-    </html>
+    <div>
+      <Navbar />
+      {children}
+    </div>
   );
 }
