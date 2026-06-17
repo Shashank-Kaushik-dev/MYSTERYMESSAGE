@@ -31,6 +31,9 @@ function UserDashboard() {
 
   const form = useForm({
     resolver: zodResolver(acceptMessageSchema),
+    defaultValues: {
+      acceptMessage: false,
+    },
   });
 
   const { register, watch, setValue } = form;
@@ -89,7 +92,7 @@ function UserDashboard() {
     fetchMessages();
 
     fetchAcceptMessage();
-  }, [session, setValue, toast, fetchAcceptMessage, fetchMessages]);
+  }, [session, setValue,  fetchAcceptMessage, fetchMessages]);
 
   // Handle switch change
   const handleSwitchChange = async () => {

@@ -25,7 +25,7 @@ import { ApiResponse } from '@/types/ApiResponse';
 import { Loader2 } from 'lucide-react';
 
 
-export default function SignInForm() {
+export default function SignUpForm() {
 
   const router = useRouter();
   const [username,setUsername] = useState('');

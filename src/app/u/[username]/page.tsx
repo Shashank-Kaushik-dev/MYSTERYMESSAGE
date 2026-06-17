@@ -23,6 +23,7 @@ import { ApiResponse } from '@/types/ApiResponse';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { messageSchema } from '@/schemas/messageSchema';
+import { SuggestionResponse } from '@/types/SuggestionResponse';
 
 const parseStringMessages = (messageString?: string): string[] => {
   if (!messageString) return [];
@@ -40,7 +41,11 @@ export default function SendMessage() {
   const params = useParams<{ username: string }>();
   const username = params.username;
 
-  const [completion, setCompletion] = useState(initialMessageString);
+ const [suggestions, setSuggestions] = useState<string[]>([
+  "What's your favorite movie?",
+  "Do you have any pets?",
+  "What's your dream job?",
+]);
   const [isSuggestLoading, setIsSuggestLoading] = useState(false);
   const [suggestError, setSuggestError] = useState<string | null>(null);
 
@@ -106,9 +111,10 @@ export default function SendMessage() {
       throw new Error('Failed to fetch suggestions');
     }
 
-    const text = await response.text();
+  const data: SuggestionResponse = await response.json();
 
-    setCompletion(text);
+  setSuggestions(data.messages);
+
   } catch (error) {
     const message =
       error instanceof Error && error.name === 'AbortError'
@@ -203,18 +209,16 @@ export default function SendMessage() {
             {suggestError ? (
               <p className="text-red-500">{suggestError}</p>
             ) : (
-              parseStringMessages(completion).map(
-                (message, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    className="mb-2 whitespace-normal h-auto p-4 text-left justify-start"
-                    onClick={() => handleMessageClick(message)}
-                  >
-                    {message}
-                  </Button>
-                )
-              )
+              suggestions.map((message, index) => (
+              <Button
+                key={index}
+                variant="outline"
+                className="mb-2 whitespace-normal h-auto p-4 text-left justify-start"
+                onClick={() => handleMessageClick(message)}
+              >
+                {message}
+              </Button>
+            ))
             )}
           </CardContent>
         </Card>

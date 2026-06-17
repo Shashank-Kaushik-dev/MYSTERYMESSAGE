@@ -19,7 +19,9 @@ const VerifyAccount = () => {
 
     const form = useForm<z.infer<typeof verifySchema>>({
         resolver: zodResolver(verifySchema ),// resolver for validating form data using zod schema
-        
+        defaultValues: {
+          code: '',
+        },
       });
 
       const onSubmit = async (data: z.infer<typeof verifySchema>) => {
