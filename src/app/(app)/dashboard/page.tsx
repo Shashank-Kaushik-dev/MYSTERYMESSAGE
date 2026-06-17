@@ -2,7 +2,7 @@
 
 import { MessageCard } from '@/components/MessageCard';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { Message } from '@/model/User';
@@ -15,6 +15,8 @@ import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { acceptMessageSchema } from '@/schemas/acceptMessageSchema';
+
+import {Input} from '@/components/ui/input';
 
 function UserDashboard() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -134,39 +136,100 @@ function UserDashboard() {
     });
   };
 
-  return (
-    <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
-      <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
+ return (
+  <main className="min-h-screen bg-black bg-gradient-to-b from-black via-black to-zinc-950 text-white">
+    <div className="max-w-7xl mx-auto px-6 md:px-12 py-16">
 
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>{' '}
-        <div className="flex items-center">
-          <input
-            type="text"
-            value={profileUrl}
-            disabled
-            className="input input-bordered w-full p-2 mr-2"
-          />
-          <Button onClick={copyToClipboard}>Copy</Button>
+      {/* Header */}
+         <div className="mb-16">
+  <h1 className="text-6xl md:text-8xl font-black tracking-tight">
+    Dashboard
+  </h1>
+
+  <p className="mt-4 text-xl text-zinc-400">
+    Welcome back,
+    <span className="text-white font-semibold ml-2">
+      @{username}
+    </span>
+  </p>
+
+  <p className="mt-6 text-zinc-500 max-w-2xl">
+    Manage your anonymous feedback page, share your profile,
+    and review incoming messages.
+  </p>
+</div>
+
+      {/* Profile Link Card */}
+      <div className="border border-zinc-800 rounded-3xl p-8 bg-zinc-950 mb-8">
+  <h2 className="text-2xl font-semibold mb-2">
+    Your Feedback Link
+  </h2>
+
+  <p className="text-zinc-400 mb-6">
+    Share this link with others to receive anonymous messages and feedback.
+  </p>
+
+  <div className="flex flex-col md:flex-row gap-4">
+    <Input
+      value={profileUrl}
+      disabled
+      className="bg-zinc-900 border-zinc-700 text-white"
+    />
+
+    <Button
+      onClick={copyToClipboard}
+      className="bg-white text-black hover:bg-zinc-200"
+    >
+      Copy Link
+    </Button>
+  </div>
+</div>
+
+      {/* Settings Card */}
+      <div className="border border-zinc-800 rounded-3xl p-8 bg-zinc-950 mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold">
+              Accept Messages
+            </h2>
+
+            <p className="text-zinc-500 mt-1">
+              Enable or disable anonymous messages.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-4">
+  <Switch
+  {...register('acceptMessage')}
+  checked={acceptMessages}
+  onCheckedChange={handleSwitchChange}
+  disabled={isSwitchLoading}
+  className="
+    data-[state=checked]:bg-emerald-500
+    data-[state=unchecked]:bg-zinc-700
+  "
+/>
+
+  <span
+    className={`text-sm font-medium ${
+      acceptMessages ? 'text-green-400' : 'text-red-400'
+    }`}
+  >
+    {acceptMessages ? 'ON' : 'OFF'}
+  </span>
+</div>
         </div>
       </div>
 
-      <div className="mb-4">
-        <Switch
-          {...register('acceptMessage')}
-          checked={acceptMessages}
-          onCheckedChange={handleSwitchChange}
-          disabled={isSwitchLoading}
-        />
-        <span className="ml-2">
-          Accept Messages: {acceptMessages ? 'On' : 'Off'}
-        </span>
-      </div>
-      <Separator />
+      {/* Messages Header */}
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-3xl font-bold">
+          Messages
+        </h2>
 
-      <Button
-        className="mt-4"
+        <Button
         variant="outline"
+        className="border-zinc-700 text-black hover:bg-zinc-200"
         onClick={(e) => {
           e.preventDefault();
           fetchMessages(true);
@@ -175,12 +238,18 @@ function UserDashboard() {
         {isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
-          <RefreshCcw className="h-4 w-4" />
+          <>
+            <RefreshCcw className="mr-2 h-4 w-4" />
+            Refresh
+          </>
         )}
       </Button>
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+      </div>
+
+      {/* Messages Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {messages.length > 0 ? (
-          messages.map((message, index) => (
+          messages.map((message) => (
             <MessageCard
               key={message._id.toString()}
               message={message}
@@ -188,11 +257,17 @@ function UserDashboard() {
             />
           ))
         ) : (
-          <p>No messages to display.</p>
+          <div className="border border-zinc-800 rounded-3xl p-12 bg-zinc-950 text-center">
+            <p className="text-zinc-500">
+              No messages yet.
+            </p>
+          </div>
         )}
       </div>
+
     </div>
-  );
+  </main>
+);
 }
 
 export default UserDashboard;

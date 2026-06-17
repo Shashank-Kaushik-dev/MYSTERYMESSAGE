@@ -21,41 +21,50 @@ export const authOptions: NextAuthOptions = {
         },
       },
 
-       async authorize(credentials: any): Promise<any> {
-        await dbConnect();
+  async authorize(
+  credentials?: Record<'identifier' | 'password', string>
+) {
+  await dbConnect();
 
-        try {
-          const user = await UserModel.findOne({
-            $or: [
-              { email: credentials?.identifier },
-              { username: credentials?.identifier },
-            ],
-          });
+  if (!credentials) {
+    throw new Error('Credentials are required');
+  }
 
-          if (!user) {
-            throw new Error(
-              "No user found with the given email or username"
-            );
-          }
+  const user = await UserModel.findOne({
+    $or: [
+      { email: credentials.identifier },
+      { username: credentials.identifier },
+    ],
+  });
 
-          if (!user.isVerified) {
-            throw new Error("User is not verified");
-          }
+  if (!user) {
+    throw new Error(
+      'No user found with the given email or username'
+    );
+  }
 
-          const isPasswordCorrect = await bcrypt.compare(
-            credentials!.password,
-            user.password
-          );
+  if (!user.isVerified) {
+    throw new Error('User is not verified');
+  }
 
-          if (!isPasswordCorrect) {
-            throw new Error("Incorrect password");
-          }
+  const isPasswordCorrect = await bcrypt.compare(
+    credentials.password,
+    user.password
+  );
 
-          return user;
-        } catch (err: any) {
-          throw new Error(err.message || "Authentication failed");
-        }
-      },
+  if (!isPasswordCorrect) {
+    throw new Error('Incorrect password');
+  }
+
+  return {
+    id: user._id.toString(),
+    _id: user._id.toString(),
+    email: user.email,
+    username: user.username,
+    isVerified: user.isVerified,
+    isAcceptingMessage: user.isAcceptingMessage,
+  };
+},
     }),
   ],
 
