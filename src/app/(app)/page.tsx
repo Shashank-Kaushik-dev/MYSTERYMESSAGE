@@ -59,6 +59,49 @@ export default function Home() {
             </div>
           </div>
         </section>
+        {/* Demo Account Card */}
+      <section className="max-w-7xl mx-auto px-6 md:px-12 pt-8">
+        <div className="border border-zinc-800 bg-zinc-950 rounded-2xl p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-semibold text-white">
+              Demo Account
+            </h3>
+
+            <p className="text-zinc-400 text-sm mt-1">
+              Use these credentials  to explore the dashboard and test the application.
+            </p>
+          </div>
+
+          <div className="text-sm">
+            <p>
+              <span className="text-zinc-500">Email:</span>{' '}
+              <span className="font-medium text-white">
+                demo@gmail.com
+              </span>
+            </p>
+            <p>
+              <span className="text-zinc-500">Username:</span>{' '}
+              <span className="font-medium text-white">
+                demo
+              </span>
+            </p>
+
+            <p className="mt-1">
+              <span className="text-zinc-500">Password:</span>{' '}
+              <span className="font-medium text-white">
+                test123
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-3 text-xs text-zinc-500">
+          Note: New account registration requires email verification through a
+          Resend test account, so sign-up functionality may be unavailable for
+          public visitors. Please use the demo account above to explore all
+          features.
+        </div>
+      </section>
 
         {/* Divider */}
         <div className="border-t border-zinc-900" />

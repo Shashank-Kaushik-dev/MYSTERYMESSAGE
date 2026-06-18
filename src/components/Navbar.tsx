@@ -9,11 +9,10 @@ import {usePathname} from 'next/navigation';
 
 function Navbar() {
   const { data: session } = useSession();
-  const user  = session?.user;
-  if (!user) {
-  return null;
-}
   const pathname = usePathname();
+  const user  = session?.user;
+ 
+  
 
   return (
   <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-950">
