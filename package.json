@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@ai-sdk/groq": "^3.0.41",
-    "@ai-sdk/react": "^3.0.208",
     "@hookform/resolvers": "^5.4.0",
     "@nanostores/react": "github:ai/react",
     "@react-email/components": "^1.0.12",
