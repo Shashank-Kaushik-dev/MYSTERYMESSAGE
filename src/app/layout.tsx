@@ -21,7 +21,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <AuthProvider>
         <body className={inter.className}>
           {children}
-          <Toaster />
+          <Toaster richColors />
         </body>
       </AuthProvider>
     </html>

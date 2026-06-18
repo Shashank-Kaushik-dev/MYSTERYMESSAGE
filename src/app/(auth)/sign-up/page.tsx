@@ -1,11 +1,11 @@
 'use client';
-import React from 'react';
-import { useDebounceValue, useDebounceCallback } from 'usehooks-ts'
+
+import {  useDebounceCallback } from 'usehooks-ts'
 import { useState,useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { signIn } from 'next-auth/react';
+
 import {
   Form,
   FormField,
@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { signInSchema } from '@/schemas/signInSchema';
+
 import { signUpSchema } from '@/schemas/signUpSchema';
 import axios, {AxiosError} from 'axios';
 import { ApiResponse } from '@/types/ApiResponse';
@@ -71,12 +71,12 @@ export default function SignUpForm() {
       toast.success('Success', {
           description: resposne.data.message,
 });
-      router.replace(`/verify/${username}`)
+      router.replace(`/verify/${data.username}`)
       setIsSubmitting(false);
     } catch (error) {
       console.error("Error in signup of user", error)
       const axiosError = error as AxiosError<ApiResponse>;
-      let errorMessage = axiosError.response?.data.message 
+      const errorMessage = axiosError.response?.data.message 
       toast.error('Error', {
         description: errorMessage ?? 'An error occurred during sign up',
       });
@@ -84,76 +84,135 @@ export default function SignUpForm() {
     }
   };
 
- return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-800">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-        <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-            Join True Feedback
-          </h1>
-          <p className="mb-4">Sign up to start your anonymous adventure</p>
-        </div>
+return (
+  <main className="min-h-screen bg-black bg-gradient-to-b from-black via-black to-zinc-950 text-white flex items-center justify-center px-6 py-16">
+    <div className="w-full max-w-md">
+      {/* Heading */}
+      <div className="text-center mb-12">
+        <p className="uppercase tracking-[0.3em] text-zinc-500 text-sm">
+          Create Account
+        </p>
+
+        <h1 className="mt-4 text-5xl md:text-6xl font-bold tracking-tight">
+          Join True
+          <br />
+          Feedback
+        </h1>
+
+        <p className="mt-6 text-zinc-400 leading-relaxed">
+          Create your anonymous feedback page and start receiving
+          honest opinions from anyone.
+        </p>
+      </div>
+
+      {/* Form Card */}
+      <div className="border border-zinc-800 rounded-3xl p-8 bg-zinc-950">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6"
+          >
+            {/* Username */}
             <FormField
               name="username"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel className="text-zinc-300">
+                    Username
+                  </FormLabel>
+
                   <Input
-                     placeholder="Enter your username"
+                    placeholder="Choose a username"
+                    className="bg-zinc-900 border-zinc-700 text-white"
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
                       debounced(e.target.value);
                     }}
                   />
-                  {isCheckingUsername && <Loader2 className="animate-spin" />}
-                  {!isCheckingUsername && usernameMessage && (
-                    <p
-                      className={`text-sm ${
-                        usernameMessage === 'Username is unique'
-                          ? 'text-green-500'
-                          : 'text-red-500'
-                      }`}
-                    >
-                      {usernameMessage}
-                    </p>
+
+                  {isCheckingUsername ? (
+                    <div className="flex items-center gap-2 text-zinc-400 text-sm">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Checking username...
+                    </div>
+                  ) : (
+                    usernameMessage && (
+                      <p
+                        className={`text-sm ${
+                          usernameMessage === 'Username is unique'
+                            ? 'text-green-500'
+                            : 'text-red-500'
+                        }`}
+                      >
+                        {usernameMessage}
+                      </p>
+                    )
                   )}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="email"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <Input {...field} name="email" />{/*no need for onchange here as react-hook-form handles it automatically */} 
-                  <p className=' text-gray-400 text-sm'>We will send you a verification code</p>
+
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Email */}
+            <FormField
+              name="email"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-zinc-300">
+                    Email
+                  </FormLabel>
+
+                  <Input
+                    placeholder="Enter your email"
+                    className="bg-zinc-900 border-zinc-700 text-white"
+                    {...field}
+                  />
+
+                  <p className="text-zinc-500 text-sm">
+                   We&apos;ll send a verification code to this email.
+                  </p>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Password */}
             <FormField
               name="password"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <Input type="password" {...field} name="password" />
+                  <FormLabel className="text-zinc-300">
+                    Password
+                  </FormLabel>
+
+                  <Input
+                    type="password"
+                    placeholder="Create a password"
+                    className="bg-zinc-900 border-zinc-700 text-white"
+                    {...field}
+                  />
+
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className='w-full' disabled={isSubmitting}>
+
+            {/* Submit */}
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-white text-black hover:bg-zinc-200"
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
+                  Creating Account...
                 </>
               ) : (
                 'Sign Up'
@@ -161,15 +220,21 @@ export default function SignUpForm() {
             </Button>
           </form>
         </Form>
-        <div className="text-center mt-4">
-          <p>
-            Already a member?{' '}
-            <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
-              Sign in
+
+        {/* Footer */}
+        <div className="mt-8 text-center">
+          <p className="text-zinc-500">
+            Already have an account?{' '}
+            <Link
+              href="/sign-in"
+              className="text-white hover:text-zinc-300"
+            >
+              Sign In
             </Link>
           </p>
         </div>
       </div>
     </div>
-  );
+  </main>
+);
 }

@@ -1,22 +1,22 @@
 import dbConnect from '@/lib/dbConnect';
 import UserModel from '@/model/User';
 import mongoose from 'mongoose';
-import { User } from 'next-auth';
+
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/options';
 
-export async function GET(request: Request) {
+export async function GET() {
   await dbConnect();
   const session = await getServerSession(authOptions);
-  const _user: User = session?.user;
+  
 
-  if (!session || !_user) {
+  if (!session || !session?.user) {
     return Response.json(
       { success: false, message: 'Not authenticated' },
       { status: 401 }
     );
   }
-  const userId = new mongoose.Types.ObjectId(_user._id);
+  const userId = new mongoose.Types.ObjectId(session.user._id);
   try {
     const user = await UserModel.aggregate([
       { $match: { _id: userId } },

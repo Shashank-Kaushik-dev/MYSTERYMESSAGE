@@ -1,38 +1,78 @@
 'use client'
 
-import React from 'react';
+
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from './ui/button';
-import { User } from 'next-auth';
+
+import {usePathname} from 'next/navigation';
 
 function Navbar() {
   const { data: session } = useSession();
-  const user : User = session?.user;
+  const pathname = usePathname();
+  const user  = session?.user;
+ 
+  
 
   return (
-    <nav className="p-4 md:p-6 shadow-md bg-gray-900 text-white">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-        <a href="#" className="text-xl font-bold mb-4 md:mb-0">
-          Mystry Message
-        </a>
+  <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-950">
+    <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className="grid grid-cols-3 items-center">
+        
+        {/* Left */}
+        <Link href="/" className="justify-self-start">
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            Mystery Message
+          </h1>
+        </Link>
+
+        {/* Center */}
+        <div className="justify-self-center">
+          {session && (
+            <span className="text-zinc-300">
+              Welcome,
+              <span className="text-white font-semibold ml-2">
+                {user?.username || user?.email}
+              </span>
+            </span>
+          )}
+        </div>
+
+        {/* Right */}
+       <div className="justify-self-end flex items-center gap-3">
         {session ? (
           <>
-            <span className="mr-4">
-              Welcome, {user?.username || user?.email}
-            </span>
-            <Button onClick={() => signOut({ callbackUrl: '/' })} className="w-full md:w-auto bg-slate-100 text-black" variant='outline'>
+            {pathname !== '/dashboard' && (
+              <Link href="/dashboard">
+                <Button
+                  variant="outline"
+                  className="bg-white text-black hover:bg-zinc-200"
+                >
+                  Dashboard
+                </Button>
+              </Link>
+            )}
+
+            <Button
+              onClick={() => signOut({ callbackUrl: '/' })}
+              className="bg-white text-black hover:bg-zinc-200"
+            >
               Logout
             </Button>
           </>
         ) : (
           <Link href="/sign-in">
-            <Button className="w-full md:w-auto bg-slate-100 text-black" variant={'outline'}>Login</Button>
+            <Button className="bg-white text-black hover:bg-zinc-200">
+              Login
+            </Button>
           </Link>
         )}
       </div>
-    </nav>
-  );
+
+      </div>
+    </div>
+  </nav>
+);
 }
 
 export default Navbar;
