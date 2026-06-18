@@ -117,16 +117,4 @@ Verification and verification-code handling are implemented with helpers in [src
 
 Please follow the code style in the repo and run lint before opening a PR.
 
-## License
 
-This project does not include a license file. Add a `LICENSE` if you intend to open-source it.
-
----
-
-If you'd like, I can also:
-
-- Add a LICENSE
-- Create a GitHub Actions workflow for CI (build + lint)
-- Add example `.env.example` with the environment variables
-
-Let me know which you'd like next.
